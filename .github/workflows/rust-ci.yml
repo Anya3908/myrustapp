@@ -12,7 +12,6 @@ env:
   IMAGE_NAME: my-rust-app
 
 jobs:
-  # Job 1: Линтинг и форматирование
   lint:
     name: Lint & Format
     runs-on: ubuntu-latest
@@ -21,12 +20,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          toolchain: stable
           components: rustfmt, clippy
-          override: true
 
       - name: Check formatting
         run: cargo fmt --all -- --check
@@ -34,7 +30,6 @@ jobs:
       - name: Run Clippy (linter)
         run: cargo clippy -- -D warnings
 
-  # Job 2: Сборка и тестирование
   test:
     name: Build & Test
     runs-on: ubuntu-latest
@@ -44,11 +39,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Check code (fast)
         run: cargo check --verbose
@@ -62,7 +53,6 @@ jobs:
       - name: Run tests
         run: cargo test --verbose
 
-  # Job 3: Сборка Docker образа
   docker-build:
     name: Build Docker Image
     runs-on: ubuntu-latest
